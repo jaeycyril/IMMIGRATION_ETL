@@ -46,7 +46,7 @@ The data was modeled using the Star schema with one outrigger dimension for race
 method for modeling data. It was useful here because it allowed us bring together all the tables at a level of granularity which 
 we could determine. During analysis, the fact table can be sliced and diced along each of the dimensions we have.
 
-[]()
+![Data model diagram](/data_model.png)
 
 Data Pipeline steps:
 1. Place each dataset in the S3 buckets after the initial manual assessment
