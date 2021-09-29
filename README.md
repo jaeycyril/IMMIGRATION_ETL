@@ -5,6 +5,18 @@ format after being extracted from the source systems to usable format from where
 
 Here, we used the immigration data for the United States to create a source of truth for further analysis.
 
+The final source of truth can be used to answer questions regarding patterns of migration into and out of the US.
+We can use the Date dimension to determine how many individuals came into the US for each month. 
+This can help us see of there is any seasonality in the migration numbers or if there are peak months. 
+This can help with better planning on the part of the migration office.
+
+Using the visa dimension, we can see the most popular visa types granted to incoming migrants and find out the main reasons for their visit. 
+We can also tell the avergae staying period for different visa types.
+
+Also, the City dimension can show us the inflow of individuals into different cities in the US and over time, this can give us a picture of how much migration contributes towards the population in these cities.
+
+Questions like these can help the migration department to plan how to deploy their resources to ensure smooth operations at the borders e.g. during peak periods. They can also help the Government with policy planning e.g. the number of people coming via a particular visa could be increased or reduced based on the needs of the Government at any particular time.
+
 ## STEP 1: SCOPE AND DATA GATHERING
 
 In this project, we will combine immigration data with temperature data and US city demographics data to produce
@@ -78,3 +90,19 @@ data so this would not cause issues. Elasticity and scalability is an area where
 **If the data populates a dashboard daily**, then it would be effectuve to wrap up that update process into Airflow. Airflow allows us to schedule tasks like these while giving us fine grained control over the timing. It also allows us connect easily to EMR to run the process when necessary.
 
 **If the data needs to be accessed by 100+**, The final tables are in parquet format, so we could load them into Redshift (or other large scale production ready Data Warehouse solutions) which allows multiple concurrent connections.
+
+
+## SAMPLE QUERY
+
+Suppose we wanted to see the distribution of migrants per visa type and month, then we could write the following query:
+
+```sql
+SELECT v.Visa_type, month(d.migration_date), count(*)
+FROM Immigration_fact a
+JOIN Visa_mode v
+ON a.i94visa = v.Visa_code
+JOIN Date_dimension d
+ON a.arrival_date = d.migration_date
+GROUP BY 1, 2
+ORDER BY 1, 2
+```
