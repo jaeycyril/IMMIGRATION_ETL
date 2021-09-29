@@ -94,15 +94,16 @@ data so this would not cause issues. Elasticity and scalability is an area where
 
 ## SAMPLE QUERY
 
-Suppose we wanted to see the distribution of migrants per visa type and month, then we could write the following query:
+Suppose we wanted to see the distribution of visa types for incoming travellers, we could use the following code:
 
 ```sql
-SELECT v.Visa_type, month(d.migration_date), count(*)
-FROM Immigration_fact a
-JOIN Visa_mode v
+SELECT v.Visa_type, count(*) as Immigrant_count
+FROM immigration_fact a
+JOIN Visa_mode_dimension v
 ON a.i94visa = v.Visa_code
-JOIN Date_dimension d
-ON a.arrival_date = d.migration_date
-GROUP BY 1, 2
-ORDER BY 1, 2
+GROUP BY 1
 ```
+
+![Query result](/result.png)
+
+We see that most people are coming in for tourism first, then for business, before study.
