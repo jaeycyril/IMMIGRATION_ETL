@@ -119,9 +119,17 @@ def process_visa_mode_dimension(spark, input_data, output_data):
     
     visa_and_mode_dim = visa_data.crossJoin(mode_data)
     
-    # quality check
+    # quality check 1
     if visa_and_mode_dim.count() < 1:
         raise Exception("Visa and Mode junk Dimension has no data")
+
+
+    # quality check 2: Check that no extra categories exist
+    if visa_and_mode_dim.select(F.countDistinct('Visa_type')).collect()[0][0] != 3:
+        raise Exception("Visa type should have exactly 3 distinct values.")
+
+    if visa_and_mode_dim.select(F.countDistinct('Mode')).collect()[0][0] != 4:
+        raise Exception("Mode type should have exactly 4 distinct values.")
     
     visa_and_mode_dim.write.mode("overwrite").parquet("{output_data}/visa_and_mode_dim.parquet")
     
